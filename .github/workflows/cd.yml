@@ -11,17 +11,21 @@ jobs:
 
     steps:
     
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Prepare SSH key
       run: |
-        echo "${{ secrets.SSH_KEY }}" > /tmp/id_rsa
-        chmod 400 /tmp/id_rsa
+        mkdir -p /tmp/ssh
+        printf "%s" "${{ secrets.SSH_KEY }}" | tr -d '\r' > /tmp/ssh/id_rsa
+        chmod 400 /tmp/ssh/id_rsa
 
     - name: SSH and deploy app
       uses: appleboy/ssh-action@v1
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
-        key: /tmp/id_rsa
+        key: /tmp/ssh/id_rsa
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ~/auth-api
