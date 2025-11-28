@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Test SSH connectivity
+    - name: Prepare SSH key
       run: |
-        nc -vz ${{ secrets.SSH_HOST }} ${{ secrets.SSH_PORT }}
+        echo "${{ secrets.SSH_KEY }}" > /tmp/id_rsa
+        chmod 600 /tmp/id_rsa
     
     - name: SSH and deploy app
       uses: appleboy/ssh-action@v1
