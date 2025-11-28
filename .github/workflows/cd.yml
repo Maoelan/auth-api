@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Show runner public IP
+      run: curl ifconfig.me
+
+    - name: Test SSH port
+      run: nc -vz ${{ secrets.SSH_HOST }} ${{ secrets.SSH_PORT }}
+      
     - name: SSH and deploy app
       uses: appleboy/ssh-action@v1
       with:
