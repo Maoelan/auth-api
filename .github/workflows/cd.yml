@@ -10,16 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
-    - name: Checkout code
-      uses: actions/checkout@v3
 
+    # 4️⃣ Prepare SSH private key
     - name: Prepare SSH key
       run: |
         mkdir -p /tmp/ssh
         printf "%s" "${{ secrets.SSH_KEY }}" | tr -d '\r' > /tmp/ssh/id_rsa
         chmod 400 /tmp/ssh/id_rsa
 
+    - name: Add EC2 host to known_hosts
+      run: |
+        mkdir -p /tmp/ssh
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> /tmp/ssh/known_hosts
+
+    # 6️⃣ SSH and deploy
     - name: SSH and deploy app
       uses: appleboy/ssh-action@v1
       with:
@@ -27,6 +31,7 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: /tmp/ssh/id_rsa
         port: ${{ secrets.SSH_PORT }}
+        known_hosts: /tmp/ssh/known_hosts
         script: |
           cd ~/auth-api
           git pull origin main
