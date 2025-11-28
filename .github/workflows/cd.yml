@@ -10,11 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Prepare SSH key
-      run: |
-        echo "${{ secrets.SSH_KEY }}" > /tmp/id_rsa
-        chmod 600 /tmp/id_rsa
-    
     - name: SSH and deploy app
       uses: appleboy/ssh-action@v1
       with:
