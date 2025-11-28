@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Test SSH connectivity
+      run: |
+        nc -vz ${{ secrets.SSH_HOST }} ${{ secrets.SSH_PORT }}
+    
     - name: SSH and deploy app
       uses: appleboy/ssh-action@v1
       with:
